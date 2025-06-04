@@ -1,64 +1,83 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useParams } from 'react-router-dom';
-import ReviewCard from '../components/ReviewCard';
-import StarsRating from '../components/StarsRating';
+import React from 'react'
+import { useState, useEffect } from 'react'
+import { useParams } from 'react-router-dom'
+import axios from 'axios'
 
-const MoviePage = () => {
+import ReviewCard from '../components/ReviewCard'
+import StarsRating from '../components/StarsRating'
+import ReviewForm from '../components/ReviewForm'
 
-    const { id } = useParams();
+const MovieDetail = () => {
 
-    const [movie, setMovie] = useState(null);
+    const { id } = useParams()
 
-    const fetchMovie = () => {
-        axios.get(`http://127.0.0.1:300/api/movies/${id}`).then((resp) => {
-            setMovie(resp.data);
-        }).catch((err) => console.log(err));
-    };
+    const [movie, setMovie] = useState({})
+
+    const [reviews, setReviews] = useState([])
+
+    const fecthMovie = () => {
+        axios
+            .get(`http://localhost:3000/api/movies/${id}`)
+            .then((response) => {
+                setMovie(response.data)
+                setReviews(response.data.reviews)
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+    }
 
     useEffect(() => {
-        fetchMovie()
-    }, []); //<- importante le parentesi quadre! Se no KABOOM!
+        fecthMovie()
+    }, [])
 
     return (
         <>
-            <div className='row'>
-                {movie === null ? (
-                    `Caricamento dati film`
-                ) : (
-                    <>
-                        <div className="col-12 col-md-6 col-lg-4">
-                            <img src={movie.image} alt="Movie" className='img-fluid' />
-                        </div>
-                        <div className="col-12 col-md-6 col-lg-8">
-                            <h1>{movie.title}</h1>
-                            <h5>
-                                <em className='text-secondary'>{movie.director}</em>
-                            </h5>
-                            <h4>
-                                <em>{movie.genre}</em>
-                            </h4>
-                            <h6>
-                                <em className='text-secondary'>{movie.release_year}</em>
-                            </h6>
-                            <p>{movie.abstract}</p>
-                        </div>
-                        <div className="col-12">
-                            <div className="d-flex justify-content-between">
-                                <h3>Recensioni</h3>
-                                <div><StarsRating vote={movie.average_vote} /></div>
-                            </div>
-                        </div>
-                        {movie.reviews.map((review) => (
-                            <div className="row gy-3">
-                                <ReviewCard review={review} key={`review -${review.id}`} />
-                            </div>
-                        ))}
-                    </>
-                )}
+            <div className="container">
+                <div className="row my-3">
+                    <div className="col-12">
+                        <h2>MovieDetail</h2>
+                    </div>
+                </div>
+                <div className="row mb-4">
+                    <div className="col-12 col-md-6 col-lg-4">
+                        <img
+                            src={movie.image}
+                            alt={movie.title}
+                            className='img-fluid'
+                        />
+                    </div>
+                    <div className="col-12 col-md-6 col-lg-8">
+                        <h3 className='mb-3'>{movie.title}</h3>
+                        <p>Director: {movie.director}</p>
+                        <p>Genre: {movie.genre}</p>
+                        <p>Release Year: {movie.release_year}</p>
+                        <p>Abstract: {movie.abstract}</p>
+                        <p>{reviews.length} reviews</p>
+                    </div>
+                </div>
+
+                <div className="row mb-3">
+                    <div className="col-6">
+                        <h3>Reviews</h3>
+                    </div>
+                    <div className="col-6 text-end">
+                        <StarsRating vote={movie.vote} />
+                    </div>
+                </div>
+                <div className="row">
+                    {reviews.map(review => (
+                        <ReviewCard review={review} key={review.id} />
+                    ))}
+                </div>
+                <div className="row">
+                    <div className="col-12">
+                        <ReviewForm movie_id={movie.id} updateReviews={() => { fecthMovie() }} />
+                    </div>
+                </div>
             </div>
         </>
     )
 }
 
-export default MoviePage;
+export default MovieDetail;

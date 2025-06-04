@@ -2,18 +2,24 @@ import React from 'react'
 import StarsRating from './StarsRating'
 
 const ReviewCard = ({ review }) => {
-    const { text, vote, author } = review;
-
     return (
-        <div>
-            <div className="col-12">
-                <div className="card p-4">
-                    <p>{text}</p>
-                    <p><StarsRating vote={vote} /></p>
-                    <p>{author}</p>
+        <>
+            <div className="col-12 card mb-2 p-3">
+                <div className="row">
+                    <div className="col-6">
+                        <h4>{review.name}</h4>
+                    </div>
+                    <div className="col-6">
+                        <p className='text-end'>Vote: <StarsRating vote={review.vote} /></p>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-12">
+                        <p>{review.text}</p>
+                    </div>
                 </div>
             </div>
-        </div>
+        </>
     )
 }
 

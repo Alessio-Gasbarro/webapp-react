@@ -1,20 +1,23 @@
-import DefaultLayout from "../layouts/DefaultLayouts"
-import { BrowserRouter, Routes, Route } from "react-router-dom"
-import HomePage from "../pages/HomePage"
-import MoviePage from "../pages/MoviePage"
-import NotFoundPage from "../pages/NotFoundPage"
+// hooks, package and other necessary tools
+import { useState } from 'react'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import MovieDetail from '../pages/MoviePage'
+import DefaultLayouts from '../layouts/DefaultLayouts'
+import Homepage from '../pages/HomePage'
 
 function App() {
+
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route element={<DefaultLayout />}>
-          <Route index element={<HomePage />}></Route>
-          <Route path="/movies/:id" element={<MoviePage />}></Route>
-          <Route path="*" element={<NotFoundPage />}></Route>
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <>
+      <BrowserRouter>
+        <Routes>
+          <Route element={<DefaultLayouts />} >
+            <Route path="/" element={<Homepage />} />
+            <Route path="/movies/:id" element={<MovieDetail />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </>
   )
 }
 
